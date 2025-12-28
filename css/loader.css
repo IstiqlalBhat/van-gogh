@@ -7,6 +7,9 @@
     height: 100%;
     z-index: 9999;
     background-color: #000;
+    background-image: url('../images/backgrounds/loading.jpg');
+    background-size: cover;
+    background-position: center;
     /* Fallback */
     display: flex;
     justify-content: center;

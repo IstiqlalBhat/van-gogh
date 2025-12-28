@@ -251,19 +251,8 @@ class OverscrollPrevention {
     }
 
     init() {
-        // Prevent overscroll on iOS
-        document.body.addEventListener('touchmove', (e) => {
-            if (document.body.scrollTop === 0 && e.touches[0].clientY > 0) {
-                // At top of page, scrolling down - allow
-            } else if (
-                document.body.scrollHeight - document.body.scrollTop <= document.body.clientHeight &&
-                e.touches[0].clientY < 0
-            ) {
-                // At bottom of page, scrolling up - allow
-            }
-        }, { passive: true });
-
-        // Add overscroll behavior CSS
+        // Prevent overscroll on iOS using standard CSS only
+        // Removed custom touchmove logic as it interferes with native scrolling
         document.documentElement.style.overscrollBehavior = 'none';
     }
 }

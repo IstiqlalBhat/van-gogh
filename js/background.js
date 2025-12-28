@@ -138,14 +138,17 @@ class Background {
         const card1 = document.getElementById('card1-base');
         const card2 = document.getElementById('card2-base');
 
-        if (card1) {
-            card1.addEventListener('mouseenter', () => this.setTarget('orange'));
-            card1.addEventListener('mouseleave', () => this.setTarget('default'));
-        }
+        // Only add hover effects if device supports hover (mouse)
+        if (window.matchMedia('(hover: hover)').matches) {
+            if (card1) {
+                card1.addEventListener('mouseenter', () => this.setTarget('orange'));
+                card1.addEventListener('mouseleave', () => this.setTarget('default'));
+            }
 
-        if (card2) {
-            card2.addEventListener('mouseenter', () => this.setTarget('graduation'));
-            card2.addEventListener('mouseleave', () => this.setTarget('default'));
+            if (card2) {
+                card2.addEventListener('mouseenter', () => this.setTarget('graduation'));
+                card2.addEventListener('mouseleave', () => this.setTarget('default'));
+            }
         }
     }
 
