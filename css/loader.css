@@ -1,0 +1,107 @@
+/* Loader Container */
+#loader-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: #000;
+    /* Fallback */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 1.5s ease-in-out;
+}
+
+#loader-container.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Three.js Canvas for Loader */
+#loader-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Typewriter Text Container */
+#loader-text-container {
+    position: relative;
+    z-index: 2;
+    font-family: 'Courier Prime', monospace;
+    color: #fff;
+    /* Keeping it white for contrast against dark/artistic bg */
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    /* background: rgba(0, 0, 0, 0.3); Removed per user request */
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    /* backdrop-filter: blur(2px); Removed per user request */
+}
+
+/* Typewriter Cursor Effect */
+#loader-text::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Dots Animation */
+.loading-dots span {
+    animation: dots 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes dots {
+
+    0%,
+    80%,
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    #loader-text-container {
+        font-size: 1.1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    #loader-text::after {
+        content: '|';
+        height: 1.2rem;
+    }
+}

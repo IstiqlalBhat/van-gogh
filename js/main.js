@@ -7,6 +7,7 @@ import { initBackground } from './background.js';
 import { initBlobCursor } from './blob-cursor.js';
 import { initRevealSync } from './reveal-sync.js';
 import { initInteractions } from './interactions.js';
+import { initLoaderScene, disposeLoaderScene } from './loader-scene.js';
 
 /**
  * Application state and module references
@@ -38,7 +39,13 @@ function detectMobile() {
 async function preloadImages() {
     const criticalImages = [
         'images/main/graduate.png',
-        'images/VG/graduateVG.jpg'
+        'images/VG/graduateVG.jpg',
+        'images/backgrounds/orangeSN.png',
+        'images/backgrounds/starry-night.jpg',
+        'images/VG/orangeVG.png',
+        'images/VG/graduationVG.png',
+        'images/main/clemson-headshot.jpg',
+        'images/main/clemson-stage.jpg'
     ];
 
     const promises = criticalImages.map(src => {
@@ -137,6 +144,10 @@ async function init() {
     // Set loading state
     setLoadingState(true);
 
+    // Start Loader Scene Immediately
+    initLoaderScene('images/backgrounds/loading.jpg');
+    const loaderStartTime = Date.now();
+
     // Detect device type
     app.isMobile = detectMobile();
     document.body.classList.toggle('is-mobile', app.isMobile);
@@ -201,6 +212,11 @@ async function init() {
         // Wait for all modules
         await Promise.all(initPromises);
 
+        // Wait for window load to ensure fonts/CSS are ready
+        if (document.readyState !== 'complete') {
+            await new Promise(resolve => window.addEventListener('load', resolve));
+        }
+
         // Initialize interactions (after DOM elements are ready)
         app.interactions = initInteractions();
         console.log('Interactions initialized');
@@ -208,8 +224,25 @@ async function init() {
         // Mark as initialized
         app.isInitialized = true;
 
-        // Remove loading state
-        setLoadingState(false);
+        // Calculate elapsed time and ensure minimum 3s duration
+        const elapsedTime = Date.now() - loaderStartTime;
+        const minDuration = 3000;
+        if (elapsedTime < minDuration) {
+            await new Promise(resolve => setTimeout(resolve, minDuration - elapsedTime));
+        }
+
+        // Transition out loader
+        const loaderContainer = document.getElementById('loader-container');
+        if (loaderContainer) {
+            loaderContainer.classList.add('fade-out');
+            setTimeout(() => {
+                disposeLoaderScene();
+                if (loaderContainer.parentNode) loaderContainer.parentNode.removeChild(loaderContainer);
+                setLoadingState(false);
+            }, 1500); // 1.5s matches CSS transition
+        } else {
+            setLoadingState(false);
+        }
 
         console.log('Portfolio initialization complete');
 

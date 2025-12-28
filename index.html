@@ -15,12 +15,21 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/loader.css">
 
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body>
+    <!-- LOADER SCREEN -->
+    <div id="loader-container">
+        <div id="loader-canvas-container"></div>
+        <div id="loader-text-container">
+            <div id="loader-text" class="font-typewriter">Loading<span
+                    class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+        </div>
+    </div>
     <!-- SVG Definitions (Filters & Masks) -->
     <svg class="svg-defs" aria-hidden="true">
         <defs>
