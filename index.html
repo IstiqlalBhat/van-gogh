@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISTIQLAL | Animated Masterpiece</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;500;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+    <!-- SVG Definitions (Filters & Masks) -->
+    <svg class="svg-defs" aria-hidden="true">
+        <defs>
+            <!-- Gooey Blob Filter -->
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+                    result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+
+            <!-- Blob Mask for Reveal Effect -->
+            <mask id="blob-mask">
+                <rect x="-100%" y="-100%" width="300%" height="300%" fill="black" />
+                <g id="blob-group" filter="url(#goo)" fill="white"></g>
+            </mask>
+
+            <!-- Van Gogh Paint Filter -->
+            <filter id="vangogh-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" />
+                <feColorMatrix type="saturate" values="1.3" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Three.js Background Canvas -->
+    <div id="canvas-bg"></div>
+
+    <!-- Fixed Logo -->
+    <div class="logo-fixed">ISTIQLAL AURANGZEB</div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+
+    <!-- Global Reveal Container (Blob Mask Effect) -->
+    <div id="global-reveal-container">
+        <img src="images/VG/graduateVG.jpg" class="reveal-img-clone" id="hero-reveal" alt="">
+        <img src="images/VG/orangeVG.png" class="reveal-img-clone" id="card1-reveal" alt="">
+        <img src="images/VG/graduationVG.png" class="reveal-img-clone" id="card2-reveal" alt="">
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="section-hero">
+            <div class="layer-container layer-base">
+                <img src="images/main/graduate.png" class="main-img" alt="Graduate" id="hero-base">
+            </div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="section-content">
+            <div class="grid-container">
+                <!-- Title -->
+                <div class="huge-text">CLEMSON<br>GRADUATE</div>
+
+                <!-- Card 1: Headshot -->
+                <div class="card-img-1">
+                    <img src="images/main/clemson-headshot.jpg" class="painting-img" id="card1-base"
+                        alt="Clemson Headshot">
+                </div>
+                <div class="card-text-1">
+                    Masters in<br>
+                    <strong class="text-accent">Computer Science</strong><br>
+                    <span class="text-small text-muted">Networks, Systems & Security</span>
+                </div>
+
+                <!-- Card 2: Stage -->
+                <div class="card-text-2">
+                    <div class="quote-container font-typewriter">
+                        <p class="quote-text">"I put my heart and my soul into my work, and have lost my mind in the
+                            process..."</p>
+                        <p class="quote-author">- Vincent Van Gogh</p>
+                    </div>
+                </div>
+                <div class="card-img-2">
+                    <img src="images/main/clemson-stage.jpg" class="painting-img" id="card2-base" alt="Clemson Stage">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

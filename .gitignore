@@ -1,0 +1,5 @@
+.claude/
+.gemini/
+.DS_Store
+node_modules/
+Thumbs.db
