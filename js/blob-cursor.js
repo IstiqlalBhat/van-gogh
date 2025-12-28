@@ -15,19 +15,19 @@ const CONFIG = {
         lagPrimary: 0.25,
         lagSecondary: 0.5
     },
-    // Mobile/Touch settings (smaller, faster response)
+    // Mobile/Touch settings (optimized for instant feedback)
     mobile: {
-        count: 3, // Reduced from 8 for performance
-        size: 100,
-        lagPrimary: 0.35,
-        lagSecondary: 0.55
+        count: 5, // Slightly increased for better visual quality
+        size: 110, // Larger touch area
+        lagPrimary: 0.5, // More responsive (was 0.35)
+        lagSecondary: 0.7  // More responsive (was 0.55)
     },
     initialPosition: -500,
     // Touch gesture settings
     touch: {
-        holdDelay: 150,        // ms before blob appears on touch hold
-        fadeOutDelay: 300,     // ms before blob fades after touch end
-        velocityMultiplier: 1.5 // Makes swipes feel more responsive
+        holdDelay: 0,          // Instant activation (was 150)
+        fadeOutDelay: 500,     // Slower fade out for fluidity
+        velocityMultiplier: 1.2 // Smoother following
     }
 };
 
@@ -203,13 +203,18 @@ class BlobCursor {
         const touch = e.touches[0];
         this.isTouching = true;
 
+        // Haptic feedback for initial touch
+        if ('vibrate' in navigator) {
+            navigator.vibrate(15);
+        }
+
         // Clear any pending fade out
         if (this.fadeOutTimer) {
             clearTimeout(this.fadeOutTimer);
             this.fadeOutTimer = null;
         }
 
-        // Immediately move blobs to touch position (hidden)
+        // Immediately move blobs to touch position
         this.target.x = touch.clientX;
         this.target.y = touch.clientY;
         this.mouse.x = touch.clientX;
@@ -221,11 +226,9 @@ class BlobCursor {
             blob.y = touch.clientY;
         });
 
-        // Show blob after short delay (feels more intentional)
-        this.touchHoldTimer = setTimeout(() => {
-            this.isActive = true;
-            this.setBlobOpacity(1);
-        }, CONFIG.touch.holdDelay);
+        // Instant activation
+        this.isActive = true;
+        this.setBlobOpacity(1);
     }
 
     /**
@@ -236,9 +239,8 @@ class BlobCursor {
 
         const touch = e.touches[0];
 
-        // If we haven't activated yet, do it now (user is swiping)
+        // Ensure active
         if (!this.isActive) {
-            clearTimeout(this.touchHoldTimer);
             this.isActive = true;
             this.setBlobOpacity(1);
         }
@@ -252,10 +254,9 @@ class BlobCursor {
     handleTouchEnd(e) {
         this.isTouching = false;
 
-        // Clear hold timer if touch ended before activation
-        if (this.touchHoldTimer) {
-            clearTimeout(this.touchHoldTimer);
-            this.touchHoldTimer = null;
+        // Light release haptic
+        if ('vibrate' in navigator) {
+            navigator.vibrate(5);
         }
 
         // Fade out blob after delay

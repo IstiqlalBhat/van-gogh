@@ -119,6 +119,11 @@ class TouchRipple {
     }
 
     createRipple(e, element) {
+        // Haptic feedback
+        if ('vibrate' in navigator) {
+            navigator.vibrate(10);
+        }
+
         // Get position relative to element
         const rect = element.getBoundingClientRect();
         let x, y;
