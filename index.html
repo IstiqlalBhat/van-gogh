@@ -33,18 +33,18 @@
     <!-- SVG Definitions (Filters & Masks) -->
     <svg class="svg-defs" aria-hidden="true">
         <defs>
-            <!-- Gooey Blob Filter -->
+            <!-- Gooey Blob Filter (Safari Optimized) -->
             <filter id="goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" color-interpolation-filters="sRGB" />
                 <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-                    result="goo" />
+                    result="goo" color-interpolation-filters="sRGB" />
                 <feComposite in="SourceGraphic" in2="goo" operator="atop" />
             </filter>
 
             <!-- Blob Mask for Reveal Effect -->
             <mask id="blob-mask">
                 <rect x="-100%" y="-100%" width="300%" height="300%" fill="black" />
-                <g id="blob-group" filter="url(#goo)" fill="white"></g>
+                <g id="blob-group" filter="url(#goo)" fill="white" style="transform: translate3d(0,0,0);"></g>
             </mask>
 
             <!-- Van Gogh Paint Filter -->

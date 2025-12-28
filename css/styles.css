@@ -218,10 +218,17 @@ html {
     height: 100dvh;
     pointer-events: none;
     z-index: 50;
-    mask: url(#blob-mask);
-    -webkit-mask: url(#blob-mask);
+    /* Safari / WebKit Masking Support */
+    -webkit-mask-image: url(#blob-mask);
+    mask-image: url(#blob-mask);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-composite: source-over;
+    mask-composite: add;
     overflow: hidden;
     will-change: transform;
+    /* Force Hardware Acceleration in Safari */
+    transform: translate3d(0, 0, 0);
 }
 
 .reveal-img-clone {
@@ -661,9 +668,10 @@ html {
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Mobile Optimization: Disable heavy SVG filters on paint effects */
+    /* Mobile Optimization: Allow filters but simplified */
     #blob-group {
-        filter: none !important;
+        /* filter: none !important; - REMOVED: broken on touch devices */
+        will-change: transform;
     }
 
     /* Simplify painting border effect */
