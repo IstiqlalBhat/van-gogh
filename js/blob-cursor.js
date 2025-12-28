@@ -17,8 +17,8 @@ const CONFIG = {
     },
     // Mobile/Touch settings (smaller, faster response)
     mobile: {
-        count: 8,
-        size: 120,
+        count: 3, // Reduced from 8 for performance
+        size: 100,
         lagPrimary: 0.35,
         lagSecondary: 0.55
     },

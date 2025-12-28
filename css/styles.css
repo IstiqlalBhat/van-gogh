@@ -617,6 +617,17 @@ html {
         --space-2xl: 60px;
     }
 
+    /* Disable expensive animations on mobile */
+    .huge-text,
+    .logo-fixed,
+    .card-img-1,
+    .card-img-2,
+    .card-text-1,
+    .card-text-2 {
+        will-change: auto !important;
+        /* Save memory */
+    }
+
     .logo-fixed {
         top: var(--space-sm);
         left: var(--space-sm);
@@ -640,10 +651,26 @@ html {
         font-size: 1.25rem;
         padding: var(--space-md);
         border-radius: var(--radius-sm);
+        /* Mobile Optimization: Disable backdrop-filter */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(11, 16, 38, 0.95);
+        /* Solid fallback */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        /* Simpler shadow */
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
+    /* Mobile Optimization: Disable heavy SVG filters on paint effects */
+    #blob-group {
+        filter: none !important;
+    }
+
+    /* Simplify painting border effect */
     .painting-img {
         border-width: 4px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        /* Simple shadow */
     }
 
     .main-img {

@@ -49,7 +49,16 @@ class Background {
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
         // Setup renderer
-        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.WebGLRenderer({
+            powerPreference: "high-performance",
+            antialias: false
+        });
+
+        // Optimize resolution: Cap pixel ratio to save GPU
+        const isMobile = document.body.classList.contains('is-mobile');
+        const pixelRatio = isMobile ? 1 : Math.min(window.devicePixelRatio, 1.5);
+        this.renderer.setPixelRatio(pixelRatio);
+
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.container.appendChild(this.renderer.domElement);
 

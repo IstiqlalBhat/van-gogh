@@ -106,7 +106,7 @@ function initPerformanceOptimizations() {
     }
 
     // Add passive event listeners hint
-    document.addEventListener('touchstart', () => {}, { passive: true });
+    document.addEventListener('touchstart', () => { }, { passive: true });
 }
 
 /**
@@ -141,6 +141,10 @@ async function init() {
     app.isMobile = detectMobile();
     document.body.classList.toggle('is-mobile', app.isMobile);
     document.body.classList.toggle('is-desktop', !app.isMobile);
+
+    // Detect likely low-power device (mobile or low concurrency)
+    const isLowPower = app.isMobile || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+    document.body.classList.toggle('is-low-power', isLowPower);
 
     // Initialize viewport fix
     initViewportFix();
