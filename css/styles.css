@@ -801,12 +801,7 @@ html {
     filter: none !important;
 }
 
-.optimized-mobile #global-reveal-container {
-    -webkit-mask-image: none;
-    mask-image: none;
-    display: none;
-    /* Disable complex effect on low-end devices */
-}
+/* .optimized-mobile #global-reveal-container rule removed to enable blob on mobile */
 
 /* ==========================================================================
    Microinteractions
