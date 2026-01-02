@@ -50,8 +50,10 @@ class Background {
 
         // Setup renderer
         this.renderer = new THREE.WebGLRenderer({
-            powerPreference: "high-performance",
-            antialias: false
+            powerPreference: "default",
+            antialias: false,
+            alpha: false, // Performance boost
+            precision: "mediump" // Explicitly request medium precision
         });
 
         // Optimize resolution: Cap pixel ratio to save GPU
@@ -206,10 +208,61 @@ class Background {
 }
 
 /**
+ * Add to Background class:
+ */
+class AdvancedBackground extends Background {
+    constructor(containerId) {
+        super(containerId);
+        this.particles = null;
+        this.isLowPower = document.body.classList.contains('is-low-power') || document.body.classList.contains('performance-constrained');
+        this.initParticles();
+    }
+
+    initParticles() {
+        if (this.isLowPower) return;
+
+        // Create particle system
+        const particleCount = 100;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 10;
+            positions[i + 1] = (Math.random() - 0.5) * 10;
+            positions[i + 2] = (Math.random() - 0.5) * 10;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({
+            color: 0xf5c747,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.5
+        });
+
+        this.particles = new THREE.Points(geometry, material);
+        this.scene.add(this.particles);
+    }
+
+    animate() {
+        super.animate();
+
+        // Animate particles
+        if (this.particles) {
+            this.particles.rotation.x += 0.001;
+            this.particles.rotation.y += 0.002;
+        }
+    }
+}
+
+/**
+
  * Initialize the background
  * @param {string} containerId - ID of the container element
  * @returns {Background} Background instance
  */
 export function initBackground(containerId = 'canvas-bg') {
-    return new Background(containerId);
+    return new AdvancedBackground(containerId);
 }
+

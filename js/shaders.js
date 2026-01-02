@@ -4,6 +4,7 @@
  */
 
 export const vertexShader = `
+    precision mediump float;
     varying vec2 vUv;
 
     void main() {
@@ -13,6 +14,7 @@ export const vertexShader = `
 `;
 
 export const fragmentShader = `
+    precision mediump float;
     uniform sampler2D uTex1;  // Current texture
     uniform sampler2D uTex2;  // Target texture
     uniform float uMix;       // Mix factor (0.0 to 1.0)

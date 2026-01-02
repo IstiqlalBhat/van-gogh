@@ -296,8 +296,108 @@ class HapticFeedback {
 }
 
 /**
+ * Magnetic hover effect
+ */
+class MagneticEffect {
+    constructor(element, strength = 0.3) {
+        this.el = element;
+        this.strength = strength;
+        this.boundingBox = null;
+        this.center = { x: 0, y: 0 };
+
+        this.init();
+    }
+
+    init() {
+        if (!window.matchMedia('(hover: hover)').matches) return;
+
+        this.updateBoundingBox();
+        window.addEventListener('resize', () => this.updateBoundingBox());
+
+        this.el.addEventListener('mousemove', (e) => this.onMouseMove(e));
+        this.el.addEventListener('mouseleave', () => this.onMouseLeave());
+    }
+
+    updateBoundingBox() {
+        this.boundingBox = this.el.getBoundingClientRect();
+        this.center = {
+            x: this.boundingBox.left + this.boundingBox.width / 2,
+            y: this.boundingBox.top + this.boundingBox.height / 2
+        };
+    }
+
+    onMouseMove(e) {
+        const x = e.clientX - this.center.x;
+        const y = e.clientY - this.center.y;
+
+        const distance = Math.sqrt(x * x + y * y);
+        const maxDistance = this.boundingBox.width / 2;
+
+        if (distance < maxDistance) {
+            const power = 1 - (distance / maxDistance);
+            const moveX = x * this.strength * power;
+            const moveY = y * this.strength * power;
+
+            this.el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        }
+    }
+
+    onMouseLeave() {
+        this.el.style.transform = 'translate(0, 0)';
+    }
+}
+
+/**
+ * Proximity lighting effect
+ */
+class ProximityLighting {
+    constructor() {
+        this.lights = [];
+        this.init();
+    }
+
+    init() {
+        // Create virtual light sources
+        this.lights = [
+            { x: 0.2, y: 0.3, intensity: 0.8, color: '#f5c747' },
+            { x: 0.8, y: 0.7, intensity: 0.6, color: '#3498db' }
+        ];
+
+        document.addEventListener('mousemove', (e) => this.updateLightPosition(e));
+    }
+
+    updateLightPosition(e) {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        // Update lights dynamically
+        this.lights[0].x = x;
+        this.lights[0].y = y;
+
+        // Apply lighting effect to elements
+        document.querySelectorAll('.card-text-1, .painting-img').forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const elX = (rect.left + rect.width / 2) / window.innerWidth;
+            const elY = (rect.top + rect.height / 2) / window.innerHeight;
+
+            let totalBrightness = 0;
+            this.lights.forEach(light => {
+                const distance = Math.sqrt(
+                    Math.pow(elX - light.x, 2) + Math.pow(elY - light.y, 2)
+                );
+                totalBrightness += (1 - distance) * light.intensity;
+            });
+
+            el.style.boxShadow = `0 0 ${Math.max(totalBrightness * 40, 0)}px 
+                rgba(245, 199, 71, ${Math.max(totalBrightness * 0.5, 0.1)})`;
+        });
+    }
+}
+
+/**
  * Main Interactions Controller
  */
+
 class InteractionsController {
     constructor() {
         this.scrollAnimations = null;
@@ -319,6 +419,18 @@ class InteractionsController {
 
         // Add haptic feedback to buttons
         this.addHapticToButtons();
+
+        // Initialize heavy effects only if not performance constrained
+        if (!document.body.classList.contains('performance-constrained')) {
+            // Initialize magnetic effects on cards
+            document.querySelectorAll('.card-text-1, .card-text-2, .painting-img').forEach(el => {
+                new MagneticEffect(el, 0.2);
+            });
+
+            // Initialize proximity lighting
+            new ProximityLighting();
+        }
+
 
         console.log('Interactions initialized');
         return this;

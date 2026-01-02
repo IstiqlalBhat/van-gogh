@@ -42,6 +42,8 @@
     --radius-md: 16px;
     --radius-lg: 24px;
     --radius-full: 9999px;
+    --mobile-performance: 0;
+    /* Will be set via JS */
 }
 
 /* ==========================================================================
@@ -110,7 +112,7 @@ html {
    ========================================================================== */
 .section-hero {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     height: 100dvh;
     /* Dynamic viewport height for mobile */
@@ -213,7 +215,7 @@ html {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     height: 100dvh;
     pointer-events: none;
@@ -625,19 +627,21 @@ html {
     }
 
     /* Disable expensive animations on mobile */
-    .huge-text,
-    .logo-fixed,
-    .card-img-1,
-    .card-img-2,
     .card-text-1,
     .card-text-2 {
-        will-change: auto !important;
-        /* Save memory */
+        /* Replace will-change with more conservative approach */
+        /* will-change: auto !important; - REMOVED */
     }
+
+    .performance-constrained * {
+        will-change: auto !important;
+    }
+
 
     .logo-fixed {
         top: var(--space-sm);
         left: var(--space-sm);
+        max-width: calc(100% - 2 * var(--space-sm));
     }
 
     .section-content {
@@ -677,14 +681,15 @@ html {
     /* Simplify painting border effect */
     .painting-img {
         border-width: 4px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
         /* Simple shadow */
     }
 
     .main-img {
-        height: 55vh;
-        height: 55dvh;
-        max-width: 95vw;
+        width: 125%;
+        max-width: none;
+        height: auto;
+        object-fit: cover;
     }
 
     /* Adjust scroll indicator for mobile */
@@ -784,5 +789,115 @@ html {
     .card-text-1,
     .card-text-2 {
         border: 2px solid var(--c-text);
+    }
+}
+
+/* ==========================================================================
+   New Performance & Polish Classes
+   ========================================================================== */
+.optimized-mobile .painting-img {
+    transform: translateZ(0);
+    /* GPU layer */
+    filter: none !important;
+}
+
+.optimized-mobile #global-reveal-container {
+    -webkit-mask-image: none;
+    mask-image: none;
+    display: none;
+    /* Disable complex effect on low-end devices */
+}
+
+/* ==========================================================================
+   Microinteractions
+   ========================================================================== */
+@keyframes gentlePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.painting-img:hover {
+    animation: gentlePulse 2s ease-in-out infinite;
+}
+
+/* Subtle glow on logo */
+.logo-fixed {
+    position: relative;
+}
+
+.logo-fixed::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--c-accent-glow) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.logo-fixed:hover::after {
+    opacity: 0.5;
+}
+
+/* Animated underline effect */
+.text-accent {
+    position: relative;
+    display: inline-block;
+}
+
+.text-accent::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--c-accent);
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-accent:hover::after {
+    width: 100%;
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--c-accent);
+    color: var(--c-background);
+    padding: 8px;
+    z-index: 10000;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Focus styles */
+*:focus {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+}
+
+/* High contrast improvements */
+@media (prefers-contrast: high) {
+    .painting-img {
+        border: 3px solid #fff !important;
     }
 }

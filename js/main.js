@@ -28,10 +28,35 @@ function detectMobile() {
     return (
         'ontouchstart' in window ||
         navigator.maxTouchPoints > 0 ||
-        window.matchMedia('(max-width: 768px)').matches ||
-        window.matchMedia('(pointer: coarse)').matches
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        window.matchMedia('(max-width: 768px)').matches
     );
 }
+
+
+function detectPerformanceTier() {
+    // Check for iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    // Check for GPU tier (simplified)
+    const isLowEnd = (
+        navigator.hardwareConcurrency <= 4 ||
+        /(android|ios)/i.test(navigator.userAgent) ||
+        isIOS ||
+        window.matchMedia('(max-width: 1024px)').matches
+    );
+
+    if (isLowEnd) {
+        document.body.classList.add('performance-constrained', 'optimized-mobile');
+        console.log('Low-end/Mobile device detected - simplifying effects');
+
+        // Force low power mode for all iOS devices to ensure stability
+        if (isIOS) {
+            document.body.classList.add('is-low-power');
+        }
+    }
+}
+
 
 /**
  * Preload critical images for smoother experience
@@ -116,6 +141,28 @@ function initPerformanceOptimizations() {
     document.addEventListener('touchstart', () => { }, { passive: true });
 }
 
+// Performance monitoring
+function initPerformanceMonitoring() {
+    if ('PerformanceObserver' in window) {
+        const observer = new PerformanceObserver((list) => {
+            list.getEntries().forEach(entry => {
+                console.log(`[Performance] ${entry.name}: ${entry.duration.toFixed(2)}ms`);
+            });
+        });
+
+        observer.observe({ entryTypes: ['paint', 'largest-contentful-paint', 'layout-shift'] });
+    }
+
+    // Log WebGL capabilities
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (gl) {
+        console.log('WebGL Supported:', gl.getParameter(gl.VERSION));
+        console.log('Max Texture Size:', gl.getParameter(gl.MAX_TEXTURE_SIZE));
+    }
+}
+
+
 /**
  * Initialize service worker for offline support (optional)
  */
@@ -161,7 +208,11 @@ async function init() {
     initViewportFix();
 
     // Initialize performance optimizations
+    // Initialize performance optimizations
     initPerformanceOptimizations();
+    detectPerformanceTier();
+    initPerformanceMonitoring();
+
 
     try {
         // Preload critical images
